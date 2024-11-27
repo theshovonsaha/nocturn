@@ -1,0 +1,36 @@
+<function_calls>
+<invoke name="artifacts">
+<parameter name="id">netlify-config</parameter>
+<parameter name="type">application/vnd.ant.code</parameter>
+<parameter name="title">netlify.toml Configuration</parameter>
+<parameter name="command">create</parameter>
+<parameter name="content">[build]
+  command = "npm run build"
+  publish = "build/client"
+  functions = "build/server"
+
+[dev]
+  command = "npm run dev"
+  port = 8002
+
+[[headers]]
+  for = "/build/*"
+  [headers.values]
+    "Cache-Control" = "public, max-age=31536000, immutable"
+
+[functions]
+  # Increase the function timeout to 30 seconds
+  node_bundler = "esbuild"
+  external_node_modules = ["@remix-run/cloudflare"]
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[[redirects]]
+  from = "/_remix/*"
+  to = "/_remix/*"
+  status = 200</parameter>
+<parameter name="language">toml</parameter>
+</invoke>​​​​​​​​​​​​​​​​
