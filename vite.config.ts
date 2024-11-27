@@ -24,12 +24,12 @@ export default defineConfig({
   plugins: [
     remixCloudflareDevProxy({
       getLoadContext: () => ({
-        env: process.env,
-        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-        STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
-        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+        env: context.env,
+        STRIPE_SECRET_KEY: context.env.STRIPE_SECRET_KEY,
+        STRIPE_PUBLIC_KEY: context.env.STRIPE_PUBLIC_KEY,
+        STRIPE_WEBHOOK_SECRET: context.env.STRIPE_WEBHOOK_SECRET,
         cloudflare: {
-          env: process.env
+          env: context.env
         }
       })
     }),
