@@ -4,11 +4,15 @@ import type { CartItem } from '~/utils/types';
 export async function createStripeSession(
   items: CartItem[],
   origin: string,
-  secretKey: string,
+  secretKey: string | undefined,
   urls: { successUrl: string; cancelUrl: string }
 ) {
+  if (!secretKey) {
+    throw new Error('Stripe secret key is required');
+  }
+
   const stripe = new Stripe(secretKey, {
-    apiVersion: '2024-11-20.acacia', // Specify the API version
+    apiVersion: '2024-11-20.acacia',
     typescript: true,
   });
   

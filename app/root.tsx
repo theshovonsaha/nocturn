@@ -1,5 +1,5 @@
 // app/root.tsx
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import {
   Links,
   Meta,
@@ -35,7 +35,7 @@ interface LoaderData {
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await getSession(request.headers.get("Cookie"), context);
   const user = await getUserFromSession(session);
   // Get cart from session (works for both guest and logged-in users)
   const cart = session.get("cart") || { items: [], total: 0 };
@@ -58,11 +58,18 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   // Only commit session if it was modified
   const headers = new Headers();
   if (session.has("cart")) {
-    headers.append("Set-Cookie", await commitSession(session));
+    headers.append("Set-Cookie", await commitSession(session, context));
   }
 
   return json(data, { headers });
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Nocturn Clothing" },
+    { name: "description", content: "Your premium clothing destination" },
+  ];
+};
 
 export default function App() {
   const { user, cart, isAuthenticated } = useLoaderData<typeof loader>();

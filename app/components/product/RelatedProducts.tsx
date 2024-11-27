@@ -4,11 +4,24 @@ import { products } from "~/data/products";
 import type { Product } from "~/utils/types";
 
 interface RelatedProductsProps {
+  /** The category to find related products from */
   category: string;
+  /** The ID of the current product to exclude from related products */
   currentProductId: string;
 }
 
 export function RelatedProducts({ category, currentProductId }: RelatedProductsProps) {
+  // Validate required props
+  if (!category) {
+    console.error('RelatedProducts: category prop is required');
+    return null;
+  }
+
+  if (!currentProductId) {
+    console.error('RelatedProducts: currentProductId prop is required');
+    return null;
+  }
+
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {

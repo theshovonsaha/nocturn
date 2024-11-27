@@ -6,7 +6,7 @@ import { CartItem as CartItemComponent } from "~/components/cart/CartItem";
 import { CartSummary } from "~/components/cart/CartSummary";
 import { products } from "~/data/products";
 import type { CartItem } from "~/utils/types";
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   const formData = await request.formData();
   const action = formData.get("action");
   const productId = formData.get("productId")?.toString();
@@ -18,7 +18,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ error: "Valid Product ID is required" }, { status: 400 });
   }
 
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await getSession(request.headers.get("Cookie"), context);
   const cart = session.get("cart") || { items: [], total: 0 };
 
   if (action === "add") {
@@ -61,7 +61,7 @@ export async function action({ request }: ActionFunctionArgs) {
       { message: "Item added to cart" },
       {
         headers: {
-          "Set-Cookie": await commitSession(session),
+          "Set-Cookie": await commitSession(session, context),
         },
       }
     );
@@ -69,8 +69,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
   return json({ error: "Invalid action" }, { status: 400 });
 }
-export async function loader({ request }: LoaderFunctionArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"), context);
   const cart = session.get("cart") || { items: [], total: 0 };
   
   return json({ 

@@ -24,13 +24,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status === "paid") {
-      const cookieSession = await getSession(request.headers.get("Cookie"));
+      const cookieSession = await getSession(request.headers.get("Cookie"), context);
       cookieSession.set("cart", { items: [], total: 0 });
 
       // Instead of redirecting, return json with the updated cookie
       return redirect("/checkout/success", {
         headers: {
-          "Set-Cookie": await commitSession(cookieSession),
+          "Set-Cookie": await commitSession(cookieSession, context),
         },
       });
     } else {

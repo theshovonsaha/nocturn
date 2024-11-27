@@ -1,12 +1,10 @@
 name = "nocturnclothing"
-compatibility_date = "2024-01-01"
-pages_build_output_dir = "build/client"
+compatibility_date = "2024-02-01"
+
+pages_build_output_dir = "./build/client"
 
 [vars]
-STRIPE_PUBLIC_KEY = ""
-STRIPE_SECRET_KEY = ""
-STRIPE_WEBHOOK_SECRET = ""
+NODE_ENV = "development"
 
-# Add bindings section
-[env.production]
 [env.production.vars]
+NODE_ENV = "production"

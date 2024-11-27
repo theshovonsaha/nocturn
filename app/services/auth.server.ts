@@ -52,7 +52,7 @@ export async function loginUser({
 
 export async function requireUser(request: Request): Promise<User> {
   try {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request.headers.get("Cookie"), { secure: true });
     const user = await getUserFromSession(session);
 
     if (!user) {
@@ -62,7 +62,7 @@ export async function requireUser(request: Request): Promise<User> {
 
       throw redirect("/login", {
         headers: {
-          "Set-Cookie": await commitSession(session),
+          "Set-Cookie": await commitSession(session, { secure: true }),
         },
       });
     }
@@ -76,7 +76,7 @@ export async function requireUser(request: Request): Promise<User> {
 
 export async function requireGuest(request: Request): Promise<null> {
   try {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request.headers.get("Cookie"), { secure: true });
     const user = await getUserFromSession(session);
 
     if (user) {
@@ -100,12 +100,12 @@ export async function createUserSession({
   redirectTo?: string;
 }): Promise<Response> {
   try {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request.headers.get("Cookie"), { secure: true });
     session.set("userId", userId);
 
     return redirect(redirectTo, {
       headers: {
-"Set-Cookie": await commitSession(session),
+        "Set-Cookie": await commitSession(session, { secure: true }),
       },
     });
   } catch (error) {
@@ -116,7 +116,7 @@ export async function createUserSession({
 
 export async function logoutUser(request: Request): Promise<Response> {
   try {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request.headers.get("Cookie"), { secure: true });
 
     // Keep the cart when logging out
     const cart = {
@@ -125,7 +125,7 @@ export async function logoutUser(request: Request): Promise<Response> {
     };
 
     // Get a fresh session
-    const newSession = await getSession(null);
+    const newSession = await getSession(null, { secure: true });
 
     // Restore cart to the new session
     newSession.set("cartItems", cart.items);
@@ -133,7 +133,7 @@ export async function logoutUser(request: Request): Promise<Response> {
 
     return redirect("/", {
       headers: {
-        "Set-Cookie": await commitSession(newSession),
+        "Set-Cookie": await commitSession(newSession, { secure: true }),
       },
     });
   } catch (error) {

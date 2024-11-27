@@ -49,6 +49,8 @@ export default function ProductDetail() {
     productId: product.id,
     action: "add",
     quantity: "1",
+    size: selectedSize,
+    color: selectedColor,
   };
 
   // Only add size and color if they exist and are selected
