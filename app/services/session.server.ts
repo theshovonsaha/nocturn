@@ -5,33 +5,33 @@ import type { CartItem } from "~/utils/types";
 
 const DEFAULT_SECRET = 'default-dev-secret-do-not-use-in-production';
 
-export const sessionStorage = (env: any) => createCookieSessionStorage({
+export const sessionStorage = () => createCookieSessionStorage({
   cookie: {
     name: "_session",
     sameSite: "lax",
     path: "/",
     httpOnly: true,
-    secrets: [env.SESSION_SECRET || DEFAULT_SECRET],
-    secure: env.NODE_ENV === "production",
+    secrets: [process.env.SESSION_SECRET || DEFAULT_SECRET],
+    secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 30, // 30 days
   },
 });
 
-export async function getSession(cookieHeader: string | null, env: any) {
-  return sessionStorage(env).getSession(cookieHeader);
+export async function getSession(cookieHeader: string | null): Promise<Session> {
+  return sessionStorage().getSession(cookieHeader);
 }
 
-export async function commitSession(session: Session, env: any) {
-  return sessionStorage(env).commitSession(session);
+export async function commitSession(session: Session) {
+  return sessionStorage().commitSession(session);
 }
 
-export async function destroySession(session: Session, env: any) {
-  return sessionStorage(env).destroySession(session);
+export async function destroySession(session: Session) {
+  return sessionStorage().destroySession(session);
 }
 
 // Cart helpers
-export async function getCartFromSession(request: Request, env: any) {
-  const session = await getSession(request.headers.get("Cookie"), env);
+export async function getCartFromSession(request: Request) {
+  const session = await getSession(request.headers.get("Cookie"));
   return session.get("cart") || { items: [], total: 0 };
 }
 
@@ -41,7 +41,6 @@ export async function updateCartInSession(
     items: CartItem[]; 
     total: number; 
   },
-  env: any
 ) {
   session.set("cart", cart);
   return session;

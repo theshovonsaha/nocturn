@@ -33,9 +33,9 @@ interface LoaderData {
   };
 }
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   
-  const session = await getSession(request.headers.get("Cookie"), context);
+  const session = await getSession(request.headers.get("Cookie"));
   const user = await getUserFromSession(session);
   // Get cart from session (works for both guest and logged-in users)
   const cart = session.get("cart") || { items: [], total: 0 };
@@ -51,14 +51,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     cart,
     isAuthenticated: !!user,
     ENV: {
-      STRIPE_PUBLIC_KEY: typeof context.STRIPE_PUBLIC_KEY === 'string' ? context.STRIPE_PUBLIC_KEY : 'public',
+      STRIPE_PUBLIC_KEY: typeof process.env.STRIPE_PUBLIC_KEY === 'string' ? process.env.STRIPE_PUBLIC_KEY : 'public',
     },
   };
 
   // Only commit session if it was modified
   const headers = new Headers();
   if (session.has("cart")) {
-    headers.append("Set-Cookie", await commitSession(session, context));
+    headers.append("Set-Cookie", await commitSession(session));
   }
 
   return json(data, { headers });
@@ -100,13 +100,15 @@ export default function App() {
 // Error Boundary
 export function ErrorBoundary() {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Error | Nocturn Clothing</title>
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="h-full">
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
           <div className="text-center px-4">
             <h1 className="text-3xl font-bold text-gray-900">

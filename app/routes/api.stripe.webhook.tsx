@@ -3,7 +3,7 @@ import { json } from "@remix-run/cloudflare";
 import type { ActionFunctionArgs } from "@remix-run/cloudflare";
 import Stripe from "stripe";
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   if (request.method !== "POST") {
     return json({ error: "Method not allowed" }, { status: 405 });
   }
@@ -14,12 +14,12 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   try {
-    const stripe = new Stripe(context.STRIPE_SECRET_KEY as string);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
     const payload = await request.text();
     const event = stripe.webhooks.constructEvent(
       payload,
       signature,
-      context.STRIPE_WEBHOOK_SECRET as string
+      process.env.STRIPE_WEBHOOK_SECRET as string
     );
 
     switch (event.type) {

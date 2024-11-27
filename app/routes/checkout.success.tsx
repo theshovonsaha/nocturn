@@ -5,7 +5,7 @@ import { json, redirect } from "@remix-run/cloudflare";
 import { getSession, commitSession } from "~/services/session.server";
 import Stripe from "stripe";
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const sessionId = url.searchParams.get("session_id");
   
@@ -20,17 +20,17 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   }
 
   try {
-    const stripe = new Stripe(context.STRIPE_SECRET_KEY as string);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status === "paid") {
-      const cookieSession = await getSession(request.headers.get("Cookie"), context);
+      const cookieSession = await getSession(request.headers.get("Cookie"));
       cookieSession.set("cart", { items: [], total: 0 });
 
       // Instead of redirecting, return json with the updated cookie
       return redirect("/checkout/success", {
         headers: {
-          "Set-Cookie": await commitSession(cookieSession, context),
+          "Set-Cookie": await commitSession(cookieSession),
         },
       });
     } else {

@@ -18,7 +18,12 @@ export default defineConfig({
   plugins: [
     remixCloudflareDevProxy({
       getLoadContext: () => ({
-        env: process.env,
+        cloudflare: {
+          env: {},
+          cf: {},
+          ctx: {},
+          caches: {},
+        },
         SESSION_SECRET: process.env.SESSION_SECRET,
         STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
         STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
@@ -35,6 +40,8 @@ export default defineConfig({
       },
       serverModuleFormat: "esm",
       ignoredRouteFiles: ["**/.*"],
+      serverMinify: false,
+      serverDependenciesToBundle: [/^(?!@remix-run\/cloudflare$)/],
     }),
     tsconfigPaths(),
   ],

@@ -11,7 +11,21 @@ interface RelatedProductsProps {
 }
 
 export function RelatedProducts({ category, currentProductId }: RelatedProductsProps) {
-  // Validate required props
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (!category || !currentProductId) return;
+    
+    const filtered = products
+      .filter(
+        (product) =>
+          product.category === category && product.id !== currentProductId
+      )
+      .slice(0, 4);
+    setRelatedProducts(filtered);
+  }, [category, currentProductId]);
+
+  // Validation checks after hooks
   if (!category) {
     console.error('RelatedProducts: category prop is required');
     return null;
@@ -21,18 +35,6 @@ export function RelatedProducts({ category, currentProductId }: RelatedProductsP
     console.error('RelatedProducts: currentProductId prop is required');
     return null;
   }
-
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const filtered = products
-      .filter(
-        (product) =>
-          product.category === category && product.id !== currentProductId
-      )
-      .slice(0, 4);
-    setRelatedProducts(filtered);
-  }, [category, currentProductId]);
 
   if (relatedProducts.length === 0) return null;
 

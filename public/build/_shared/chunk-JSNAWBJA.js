@@ -2622,7 +2622,7 @@ function createStaticHandler(routes, opts) {
     if (isErrorResult(result)) {
       let boundaryMatch = skipLoaderErrorBubbling ? actionMatch : findNearestBoundary(matches, actionMatch.route.id);
       let context2 = await loadRouteData(loaderRequest, matches, requestContext, dataStrategy, skipLoaderErrorBubbling, null, [boundaryMatch.route.id, result]);
-      return _extends({}, context2, {
+      return _extends({}2, {
         statusCode: isRouteErrorResponse(result.error) ? result.error.status : result.statusCode != null ? result.statusCode : 500,
         actionData: null,
         actionHeaders: _extends({}, result.headers ? {
@@ -2631,7 +2631,7 @@ function createStaticHandler(routes, opts) {
       });
     }
     let context = await loadRouteData(loaderRequest, matches, requestContext, dataStrategy, skipLoaderErrorBubbling, null);
-    return _extends({}, context, {
+    return _extends({}, {
       actionData: {
         [actionMatch.route.id]: result.data
       }
@@ -2681,7 +2681,7 @@ function createStaticHandler(routes, opts) {
         context.loaderData[match.route.id] = null;
       }
     });
-    return _extends({}, context, {
+    return _extends({}, {
       matches,
       activeDeferreds: activeDeferreds.size > 0 ? Object.fromEntries(activeDeferreds.entries()) : null
     });
@@ -2711,8 +2711,8 @@ function createStaticHandler(routes, opts) {
     queryRoute
   };
 }
-function getStaticContextFromError(routes, context, error) {
-  let newContext = _extends({}, context, {
+function getStaticContextFromError(routes, error) {
+  let newContext = _extends({}, {
     statusCode: isRouteErrorResponse(error) ? error.status : 500,
     errors: {
       [context._deepestRenderedBoundaryId || routes[0].id]: error
@@ -6729,7 +6729,7 @@ var require_server = __commonJS({
         mapRouteProperties: reactRouter.UNSAFE_mapRouteProperties
       });
     }
-    function createStaticRouter2(routes, context, opts = {}) {
+    function createStaticRouter2(routes, opts = {}) {
       let manifest = {};
       let dataRoutes = router2.UNSAFE_convertRoutesToDataRoutes(routes, reactRouter.UNSAFE_mapRouteProperties, void 0, manifest);
       let matches = context.matches.map((match) => {
@@ -9831,7 +9831,7 @@ function RemixServer({
     criticalCss,
     serverHandoffString
   } = context;
-  let routes = createServerRoutes(manifest.routes, routeModules, context.future, context.isSpaMode);
+  let routes = createServerRoutes(manifest.routes, routeModules.future.isSpaMode);
   context.staticHandlerContext.loaderData = {
     ...context.staticHandlerContext.loaderData
   };
@@ -9839,11 +9839,11 @@ function RemixServer({
     let routeId = match.route.id;
     let route = routeModules[routeId];
     let manifestRoute = context.manifest.routes[routeId];
-    if (route && shouldHydrateRouteLoader(manifestRoute, route, context.isSpaMode) && (route.HydrateFallback || !manifestRoute.hasLoader)) {
+    if (route && shouldHydrateRouteLoader(manifestRoute, route.isSpaMode) && (route.HydrateFallback || !manifestRoute.hasLoader)) {
       context.staticHandlerContext.loaderData[routeId] = void 0;
     }
   }
-  let router2 = (0, import_server.createStaticRouter)(routes, context.staticHandlerContext, {
+  let router2 = (0, import_server.createStaticRouter)(routes.staticHandlerContext, {
     future: {
       v7_partialHydration: true,
       v7_relativeSplatPath: context.future.v3_relativeSplatPath
@@ -9867,7 +9867,7 @@ function RemixServer({
     router: router2,
     context: context.staticHandlerContext,
     hydrate: false
-  }))), context.future.v3_singleFetch && context.serverHandoffStream ? /* @__PURE__ */ React11.createElement(React11.Suspense, null, /* @__PURE__ */ React11.createElement(StreamTransfer, {
+  }))).future.v3_singleFetch && context.serverHandoffStream ? /* @__PURE__ */ React11.createElement(React11.Suspense, null, /* @__PURE__ */ React11.createElement(StreamTransfer, {
     context,
     identifier: 0,
     reader: context.serverHandoffStream.getReader(),
