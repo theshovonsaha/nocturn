@@ -12,8 +12,27 @@ declare module "@remix-run/cloudflare" {
 }
 
 export default defineConfig({
+  server: {
+    port: 8002,
+    strictPort: true,
+    hmr: {
+      port: 8002,
+      protocol: 'ws',
+      clientPort: 8002
+    },
+  },
   plugins: [
-    remixCloudflareDevProxy(),
+    remixCloudflareDevProxy({
+      getLoadContext: () => ({
+        env: process.env,
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+        STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+        cloudflare: {
+          env: process.env
+        }
+      })
+    }),
     remix({
       future: {
         v3_fetcherPersist: true,
@@ -22,6 +41,7 @@ export default defineConfig({
         v3_singleFetch: true,
         v3_lazyRouteDiscovery: true,
       },
+      serverModuleFormat: "esm",
     }),
     tsconfigPaths(),
   ],

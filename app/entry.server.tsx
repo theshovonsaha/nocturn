@@ -16,11 +16,18 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  // This is ignored so we can keep it in the template for visibility.  Feel
+   // This is ignored so we can keep it in the template for visibility.  Feel
   // free to delete this parameter in your app if you're not using it!
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loadContext: AppLoadContext
 ) {
+  // Add caching headers for static assets
+  if (request.url.includes('/build/') || request.url.includes('/images/')) {
+    responseHeaders.set('Cache-Control', 'public, max-age=31536000');
+  } else {
+    responseHeaders.set('Cache-Control', 'public, max-age=300');
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), ABORT_DELAY);
 

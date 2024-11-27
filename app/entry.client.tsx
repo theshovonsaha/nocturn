@@ -8,11 +8,28 @@ import { RemixBrowser } from "@remix-run/react";
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 
-startTransition(() => {
-  hydrateRoot(
-    document,
-    <StrictMode>
-      <RemixBrowser />
-    </StrictMode>
-  );
-});
+function hydrate() {
+  startTransition(() => {
+    hydrateRoot(
+      document,
+      <StrictMode>
+        <RemixBrowser />
+      </StrictMode>,
+      {
+        onRecoverableError(error: unknown) {
+          if (error instanceof Error && !error.message.includes('Hydration failed')) {
+            console.warn("Recovered from error:", error);
+          }
+        },
+      }
+    );
+  });
+}
+
+if (typeof window !== 'undefined') {
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(hydrate);
+  } else {
+    window.setTimeout(hydrate, 100);
+  }
+}
