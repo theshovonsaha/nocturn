@@ -9,6 +9,8 @@ export const products = [
       ],
       category: "Accessories",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "2",
@@ -20,6 +22,8 @@ export const products = [
       ],
       category: "T-Shirts",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "3",
@@ -31,6 +35,8 @@ export const products = [
       ],
       category: "Sweaters",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "4",
@@ -42,6 +48,8 @@ export const products = [
       ],
       category: "Footwear",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "5",
@@ -53,6 +61,8 @@ export const products = [
       ],
       category: "Accessories",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "6",
@@ -64,6 +74,8 @@ export const products = [
       ],
       category: "Accessories",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "7",
@@ -75,7 +87,9 @@ export const products = [
       ],
       category: "Outerwear",
       inStock: true,
-    },
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
+      },
     {
       id: "8",
       name: "Classic Blue Jeans",
@@ -86,6 +100,8 @@ export const products = [
       ],
       category: "Denim",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "9",
@@ -97,6 +113,8 @@ export const products = [
       ],
       category: "Dresses",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "10",
@@ -108,6 +126,8 @@ export const products = [
       ],
       category: "Shirts",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "11",
@@ -119,6 +139,8 @@ export const products = [
       ],
       category: "Footwear",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "12",
@@ -130,6 +152,8 @@ export const products = [
       ],
       category: "Accessories",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "13",
@@ -141,6 +165,8 @@ export const products = [
       ],
       category: "Outerwear",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "14",
@@ -152,6 +178,8 @@ export const products = [
       ],
       category: "Accessories",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     },
     {
       id: "15",
@@ -163,5 +191,7 @@ export const products = [
       ],
       category: "Footwear",
       inStock: true,
+      sizes: ["S", "M", "L"],
+      colors: ["Red", "Blue"],
     }
 ]; 
