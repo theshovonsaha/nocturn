@@ -1,37 +1,35 @@
 // app/services/session.server.ts
 import { createCookieSessionStorage } from "@remix-run/cloudflare";
-import type { Session } from "@remix-run/cloudflare";
+import type { Session, AppLoadContext } from "@remix-run/cloudflare";
 import type { CartItem } from "~/utils/types";
 
 const DEFAULT_SECRET = 'default-dev-secret-do-not-use-in-production';
 
-export const sessionStorage = () => createCookieSessionStorage({
+export const sessionStorage = (context: AppLoadContext) => createCookieSessionStorage({
   cookie: {
     name: "_session",
     sameSite: "lax",
     path: "/",
     httpOnly: true,
-    secrets: [process.env.SESSION_SECRET || DEFAULT_SECRET],
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 30, // 30 days
+    secrets: [context.SESSION_SECRET as string || DEFAULT_SECRET],
+    secure: true,
+    maxAge: 60 * 60 * 24 * 30,
   },
 });
-
-export async function getSession(cookieHeader: string | null): Promise<Session> {
-  return sessionStorage().getSession(cookieHeader);
+export async function getSession(cookieHeader: string | null, context: AppLoadContext): Promise<Session> {
+  return sessionStorage(context).getSession(cookieHeader);
 }
 
-export async function commitSession(session: Session) {
-  return sessionStorage().commitSession(session);
+export async function commitSession(session: Session, context: AppLoadContext) {
+  return sessionStorage(context).commitSession(session);
 }
-
-export async function destroySession(session: Session) {
-  return sessionStorage().destroySession(session);
+export async function destroySession(session: Session, context: AppLoadContext) {
+  return sessionStorage(context).destroySession(session);
 }
 
 // Cart helpers
-export async function getCartFromSession(request: Request) {
-  const session = await getSession(request.headers.get("Cookie"));
+export async function getCartFromSession(request: Request, context: AppLoadContext) {
+  const session = await getSession(request.headers.get("Cookie"), context);
   return session.get("cart") || { items: [], total: 0 };
 }
 

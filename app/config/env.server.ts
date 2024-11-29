@@ -18,6 +18,7 @@ export function validateEnv() {
 export function getEnv() {
   return {
     NODE_ENV: process.env.NODE_ENV,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     SESSION_SECRET: process.env.SESSION_SECRET,
     STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,

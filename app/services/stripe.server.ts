@@ -8,6 +8,7 @@ export async function createStripeSession(
   urls: { successUrl: string; cancelUrl: string }
 ) {
   if (!secretKey) {
+    console.log(`secretKey: ${secretKey}`);
     throw new Error('Stripe secret key is required');
   }
 

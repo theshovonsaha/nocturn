@@ -8,3 +8,7 @@ NODE_ENV = "development"
 
 [env.production.vars]
 NODE_ENV = "production"
+SESSION_SECRET = ""
+STRIPE_PUBLIC_KEY = ""
+STRIPE_SECRET_KEY = ""
+STRIPE_WEBHOOK_SECRET = ""

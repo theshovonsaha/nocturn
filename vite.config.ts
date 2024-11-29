@@ -4,6 +4,8 @@ import {
 } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import type { CacheStorage } from "@cloudflare/workers-types";
+import type { AppLoadContext } from "@remix-run/cloudflare";
 
 export default defineConfig({
   server: {
@@ -17,17 +19,24 @@ export default defineConfig({
   },
   plugins: [
     remixCloudflareDevProxy({
-      getLoadContext: () => ({
+      getLoadContext: (): AppLoadContext => ({
         cloudflare: {
-          env: {},
-          cf: {},
-          ctx: {},
-          caches: {},
+          env: {
+            SESSION_SECRET: process.env.SESSION_SECRET,
+            STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+            STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+            STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+            GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+          },
+          cf: {} as unknown as IncomingRequestCfProperties,
+          ctx: {} as unknown as ExecutionContext,
+          caches: {} as unknown as CacheStorage,
         },
         SESSION_SECRET: process.env.SESSION_SECRET,
         STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
         STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
         STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
       })
     }),
     remix({
@@ -40,8 +49,6 @@ export default defineConfig({
       },
       serverModuleFormat: "esm",
       ignoredRouteFiles: ["**/.*"],
-      serverMinify: false,
-      serverDependenciesToBundle: [/^(?!@remix-run\/cloudflare$)/],
     }),
     tsconfigPaths(),
   ],

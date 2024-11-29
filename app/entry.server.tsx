@@ -4,7 +4,7 @@
  * For more information, see https://remix.run/file-conventions/entry.server
  */
 
-import type { EntryContext } from "@remix-run/cloudflare";
+import type { AppLoadContext, EntryContext } from "@remix-run/cloudflare";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
@@ -16,6 +16,7 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
+  loadContext: AppLoadContext
 ) {
   // Add caching headers for static assets
   if (request.url.includes('/build/') || request.url.includes('/images/')) {
@@ -30,7 +31,7 @@ export default async function handleRequest(
   const body = await renderToReadableStream(
     <RemixServer
       context={remixContext}
-      url={request.url}
+      url={request.url.toString()}
       abortDelay={ABORT_DELAY}
     />,
     {
