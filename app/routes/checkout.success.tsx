@@ -20,7 +20,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    const stripe = new Stripe(context.cloudflare.env.STRIPE_SECRET_KEY as string);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status === "paid") {

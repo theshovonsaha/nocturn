@@ -39,10 +39,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUserFromSession(session);
   // Get cart from session (works for both guest and logged-in users)
   const cart = session.get("cart") || { items: [], total: 0 };
-
-  // Calculate cart total
   cart.total = cart.items.reduce(
-    (sum: number, item: { price: number; quantity: number; }) => sum + (item.price * item.quantity), 
+    (sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity,
     0
   );
 
@@ -51,7 +49,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     cart,
     isAuthenticated: !!user,
     ENV: {
-      STRIPE_PUBLIC_KEY: typeof process.env.STRIPE_PUBLIC_KEY === 'string' ? process.env.STRIPE_PUBLIC_KEY : 'public',
+      STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
     },
   };
 

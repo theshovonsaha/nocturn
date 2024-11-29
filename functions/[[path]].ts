@@ -3,5 +3,7 @@ import * as build from "../build/server/index.js";
 
 export const onRequest = createPagesFunctionHandler({
   build,
-  getLoadContext: (context) => context.env
+  getLoadContext: (context) => ({
+    ...context.env
+  })
 });

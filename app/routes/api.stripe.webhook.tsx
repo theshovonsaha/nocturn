@@ -19,7 +19,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const event = stripe.webhooks.constructEvent(
       payload,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET as string
+      context.cloudflare.env.STRIPE_WEBHOOK_SECRET as string
     );
 
     switch (event.type) {

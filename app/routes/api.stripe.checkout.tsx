@@ -29,7 +29,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const stripeSession = await createStripeSession(
       cart.items,
       origin,
-      process.env.STRIPE_SECRET_KEY as string,
+      context.cloudflare.env.STRIPE_SECRET_KEY as string,
       {
         successUrl: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${origin}/cart`

@@ -4,6 +4,11 @@ import {
 } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import dotenv from "dotenv";
+import type { CacheStorage } from "@cloudflare/workers-types";
+import { AppLoadContext } from "@remix-run/cloudflare";
+
+dotenv.config();
 
 export default defineConfig({
   server: {
@@ -11,24 +16,25 @@ export default defineConfig({
     strictPort: true,
     hmr: {
       port: 8002,
-      protocol: 'ws',
-      host: 'localhost'
+      protocol: "ws",
+      host: "localhost",
     },
   },
   plugins: [
     remixCloudflareDevProxy({
-      getLoadContext: () => ({
+      getLoadContext: (): AppLoadContext => ({
         cloudflare: {
-          env: {},
-          cf: {},
-          ctx: {},
-          caches: {},
+          env: {
+            SESSION_SECRET: process.env.SESSION_SECRET,
+            STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+            STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+            STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+          },
+          cf: {} as unknown as IncomingRequestCfProperties,
+          ctx: {} as unknown as ExecutionContext,
+          caches: {} as unknown as CacheStorage,
         },
-        SESSION_SECRET: process.env.SESSION_SECRET,
-        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-        STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
-        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-      })
+      }),
     }),
     remix({
       future: {
@@ -40,8 +46,6 @@ export default defineConfig({
       },
       serverModuleFormat: "esm",
       ignoredRouteFiles: ["**/.*"],
-      serverMinify: false,
-      serverDependenciesToBundle: [/^(?!@remix-run\/cloudflare$)/],
     }),
     tsconfigPaths(),
   ],

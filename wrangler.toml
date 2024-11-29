@@ -1,10 +1,16 @@
 name = "nocturnclothing"
 compatibility_date = "2024-02-01"
-
 pages_build_output_dir = "./build/client"
 
 [vars]
+STRIPE_SECRET_KEY = "sk_test_51QNVgQJuDiFRpLs16471IFcRPT3Zh63RAiANwmW8kAivQ7KepIKKApaeXoCM8kFKTBnx5gKlYqfCWycXNWAOuJEZ00gKKG1PkS"
+STRIPE_PUBLIC_KEY = "pk_test_51QNVgQJuDiFRpLs1Gyk9Z252kxZinrPeMUuIT9mjW7KrvEaE1GnT7kyrUvrsemfxn33yS6FwbE1POjT6tyyf4j8v0030TsPcDX"
+STRIPE_WEBHOOK_SECRET = "whsec_9a5794b5aa07300abf7ba471d338bc5654fde087bf40643e1f9353c887e53438"
 NODE_ENV = "development"
 
 [env.production.vars]
+SESSION_SECRET = "xzczx312c313e1324sda311231sczx1231csd2342dwqsd23edwc42rf2fwedc"
+STRIPE_SECRET_KEY = "sk_test_51QNVgQJuDiFRpLs16471IFcRPT3Zh63RAiANwmW8kAivQ7KepIKKApaeXoCM8kFKTBnx5gKlYqfCWycXNWAOuJEZ00gKKG1PkS"
+STRIPE_PUBLIC_KEY = "pk_test_51QNVgQJuDiFRpLs1Gyk9Z252kxZinrPeMUuIT9mjW7KrvEaE1GnT7kyrUvrsemfxn33yS6FwbE1POjT6tyyf4j8v0030TsPcDX"
+STRIPE_WEBHOOK_SECRET = "whsec_9a5794b5aa07300abf7ba471d338bc5654fde087bf40643e1f9353c887e53438"
 NODE_ENV = "production"

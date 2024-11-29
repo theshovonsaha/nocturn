@@ -4,7 +4,7 @@
  * For more information, see https://remix.run/file-conventions/entry.server
  */
 
-import type { EntryContext } from "@remix-run/cloudflare";
+import type { AppLoadContext, EntryContext } from "@remix-run/cloudflare";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
@@ -16,7 +16,10 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
+  loadContext: AppLoadContext
 ) {
+
+  const stripePublicKey = loadContext.cloudflare.env.STRIPE_PUBLIC_KEY;
   // Add caching headers for static assets
   if (request.url.includes('/build/') || request.url.includes('/images/')) {
     responseHeaders.set('Cache-Control', 'public, max-age=31536000');
