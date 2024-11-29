@@ -5,6 +5,10 @@ pages_build_output_dir = "./build/client"
 
 [vars]
 NODE_ENV = "production"
+SESSION_SECRET = ""
+STRIPE_PUBLIC_KEY = ""
+STRIPE_SECRET_KEY = ""
+STRIPE_WEBHOOK_SECRET = ""
 
 [env.production.vars]
 NODE_ENV = "production"
