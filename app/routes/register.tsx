@@ -18,12 +18,12 @@ interface ActionData {
   };
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  await requireGuest(request);
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  await requireGuest(request, context);
   return null;
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   const form = await request.formData();
   const email = form.get("email");
   const password = form.get("password");
@@ -65,6 +65,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const user = { id: "new-user", email };
     return createUserSession({
       request,
+      context,
       userId: user.id,
       redirectTo: "/",
     });

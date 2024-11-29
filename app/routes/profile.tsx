@@ -5,9 +5,9 @@ import { requireUser } from "~/services/auth.server";
 import type { ProfileUpdateForm, User } from "~/utils/types";
 
 // Loader to ensure only authenticated users can access this route
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   try {
-    const user = await requireUser(request);
+    const user = await requireUser(request, context);
     return json({ user });
   } catch (error) {
     console.error("Profile loader error:", error);
@@ -16,9 +16,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 // Action to handle profile updates
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   try {
-    const user = await requireUser(request);
+    const user = await requireUser(request, context);
     const formData = await request.formData();
     const updates: ProfileUpdateForm = {
       firstName: formData.get("firstName")?.toString(),

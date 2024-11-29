@@ -3,14 +3,20 @@ import type { ActionFunctionArgs } from "@remix-run/cloudflare";
 import { createStripeSession } from "../services/stripe.server";
 import { getSession } from "../services/session.server";
 
-export async function action({ request }: ActionFunctionArgs) {
+export default function StripeCheckout() {
+  return null;
+}
+export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method !== "POST") {
     return json({ error: "Method not allowed" }, { status: 405 });
   }
-
-  // Validate Stripe key exists
-  if (!process.env.STRIPE_SECRET_KEY) {
-    console.error("Missing STRIPE_SECRET_KEY");
+  console.log("Stripe Key Available:", !!context.STRIPE_SECRET_KEY);
+  console.log("Context:", {
+    ...context,
+    STRIPE_SECRET_KEY: context.STRIPE_SECRET_KEY ? "[REDACTED]" : undefined
+  });
+  // Validate Stripe key exists using context
+  if (!context?.STRIPE_SECRET_KEY) {
     return json(
       { error: "Stripe configuration error" },
       { status: 500 }
@@ -18,7 +24,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request.headers.get("Cookie"), context);
     const cart = session.get("cart");
   
     if (!cart?.items?.length) {
@@ -29,7 +35,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const stripeSession = await createStripeSession(
       cart.items,
       origin,
-      process.env.STRIPE_SECRET_KEY as string,
+      context.STRIPE_SECRET_KEY as string,
       {
         successUrl: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${origin}/cart`

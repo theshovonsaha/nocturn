@@ -1,5 +1,5 @@
 // app/services/auth.server.ts
-import { redirect } from "@remix-run/cloudflare";
+import { AppLoadContext, redirect } from "@remix-run/cloudflare";
 import { getSession, commitSession, Session } from "./session.server";
 import type { User } from "../utils/types";
 
@@ -50,9 +50,9 @@ export async function loginUser({
   }
 }
 
-export async function requireUser(request: Request): Promise<User> {
+export async function requireUser(request: Request, context: AppLoadContext): Promise<User> {
   try {
-    const session = await getSession(request.headers.get("Cookie") || "");
+    const session = await getSession(request.headers.get("Cookie"), context);
     const user = await getUserFromSession(session);
 
     if (!user) {
@@ -62,7 +62,7 @@ export async function requireUser(request: Request): Promise<User> {
 
       throw redirect("/login", {
         headers: {
-          "Set-Cookie": await commitSession(session),
+          "Set-Cookie": await commitSession(session, context),
         },
       });
     }
@@ -74,9 +74,9 @@ export async function requireUser(request: Request): Promise<User> {
   }
 }
 
-export async function requireGuest(request: Request): Promise<null> {
+export async function requireGuest(request: Request, context: AppLoadContext): Promise<null> {
   try {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request.headers.get("Cookie"), context);
     const user = await getUserFromSession(session);
 
     if (user) {
@@ -92,20 +92,22 @@ export async function requireGuest(request: Request): Promise<null> {
 
 export async function createUserSession({
   request,
+  context,
   userId,
   redirectTo = "/",
 }: {
   request: Request;
+  context: AppLoadContext;
   userId: string;
   redirectTo?: string;
 }): Promise<Response> {
   try {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request.headers.get("Cookie"), context);
     session.set("userId", userId);
 
     return redirect(redirectTo, {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        "Set-Cookie": await commitSession(session, context),
       },
     });
   } catch (error) {
@@ -114,30 +116,25 @@ export async function createUserSession({
   }
 }
 
-export async function logoutUser(request: Request): Promise<Response> {
-  try {
-    const session = await getSession(request.headers.get("Cookie"));
+export async function logoutUser(request: Request, context: AppLoadContext): Promise<Response> {
+  const session = await getSession(request.headers.get("Cookie"), context);
 
-    // Keep the cart when logging out
-    const cart = {
-      items: session.get("cartItems") || [],
-      total: session.get("cartTotal") || 0,
-    };
+  // Keep the cart when logging out
+  const cart = {
+    items: session.get("cartItems") || [],
+    total: session.get("cartTotal") || 0,
+  };
 
-    // Get a fresh session
-    const newSession = await getSession(null);
+  // Get a fresh session
+  const newSession = await getSession(null, context);
 
-    // Restore cart to the new session
-    newSession.set("cartItems", cart.items);
-    newSession.set("cartTotal", cart.total);
+  // Restore cart to the new session
+  newSession.set("cartItems", cart.items);
+  newSession.set("cartTotal", cart.total);
 
-    return redirect("/", {
-      headers: {
-        "Set-Cookie": await commitSession(newSession),
-      },
-    });
-  } catch (error) {
-    console.error("Error logging out user:", error);
-    throw error;
-  }
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": await commitSession(newSession, context),
+    },
+  });
 }

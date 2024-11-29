@@ -33,14 +33,11 @@ interface LoaderData {
   };
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  
-  const session = await getSession(request.headers.get("Cookie"));
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"), context);
   const user = await getUserFromSession(session);
-  // Get cart from session (works for both guest and logged-in users)
   const cart = session.get("cart") || { items: [], total: 0 };
 
-  // Calculate cart total
   cart.total = cart.items.reduce(
     (sum: number, item: { price: number; quantity: number; }) => sum + (item.price * item.quantity), 
     0
@@ -51,14 +48,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     cart,
     isAuthenticated: !!user,
     ENV: {
-      STRIPE_PUBLIC_KEY: typeof process.env.STRIPE_PUBLIC_KEY === 'string' ? process.env.STRIPE_PUBLIC_KEY : 'public',
+      STRIPE_PUBLIC_KEY: context.STRIPE_PUBLIC_KEY as string,
     },
   };
 
-  // Only commit session if it was modified
   const headers = new Headers();
   if (session.has("cart")) {
-    headers.append("Set-Cookie", await commitSession(session));
+    headers.append("Set-Cookie", await commitSession(session, context));
   }
 
   return json(data, { headers });
