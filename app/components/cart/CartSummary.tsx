@@ -22,7 +22,6 @@ export function CartSummary({ cart }: CartSummaryProps) {
 
   useEffect(() => {
     if (fetcher.data?.url) {
-      console.log("Redirecting to:", fetcher.data.url);
       window.location.href = fetcher.data.url;
     }
   }, [fetcher.data]);
