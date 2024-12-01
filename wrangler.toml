@@ -4,15 +4,11 @@ compatibility_date = "2024-11-29"
 pages_build_output_dir = "./build/client"
 
 [vars]
-NODE_ENV = "production"
-SESSION_SECRET = ""
+NODE_ENV = "development"
 STRIPE_PUBLIC_KEY = ""
 STRIPE_SECRET_KEY = ""
 STRIPE_WEBHOOK_SECRET = ""
 
 [env.production.vars]
 NODE_ENV = "production"
-SESSION_SECRET = ""
-STRIPE_PUBLIC_KEY = ""
-STRIPE_SECRET_KEY = ""
-STRIPE_WEBHOOK_SECRET = ""
+
