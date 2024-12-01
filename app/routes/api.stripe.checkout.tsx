@@ -10,11 +10,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method !== "POST") {
     return json({ error: "Method not allowed" }, { status: 405 });
   }
-  console.log("Stripe Key Available:", !!context.STRIPE_SECRET_KEY);
-  console.log("Context:", {
-    ...context,
-    STRIPE_SECRET_KEY: context.STRIPE_SECRET_KEY ? "[REDACTED]" : undefined
-  });
   // Validate Stripe key exists using context
   if (!context?.STRIPE_SECRET_KEY) {
     return json(
